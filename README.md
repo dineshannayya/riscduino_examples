@@ -26,11 +26,9 @@ Repository for Riscduino Examples
 │   │   └── i2c_scaner.ino
 │   └── i2c_wr_rd
 │       └── i2c_wr_rd.ino
-├── LICENSE
 ├── PWM
 │   └── pwm
 │       └── pwm.ino
-├── README.md
 ├── SPI
 │   └── digital_port_control
 │       └── digital_port_control.ino
