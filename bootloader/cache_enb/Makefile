@@ -11,7 +11,7 @@ TOOLCHAIN_PREFIX=riscv64-unknown-elf
 
 # ---- Test patterns for project raven ----
 
-CARAVEL_MGMT_FIRMWAVE = ../../common/firmware/caravel_mgmt_core
+CARAVEL_MGMT_FIRMWAVE = ../common
 
 .SUFFIXES:
 
