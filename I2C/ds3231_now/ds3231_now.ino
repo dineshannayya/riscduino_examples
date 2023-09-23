@@ -10,7 +10,7 @@
 RTClib myRTC;
 
 void setup () {
-    Serial.begin(57600);
+    Serial.begin(9600);
     Wire.begin();
     delay(500);
     Serial.println("Nano Ready!");
