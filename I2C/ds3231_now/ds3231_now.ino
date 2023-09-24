@@ -5,39 +5,52 @@
 // https://circuitdigest.com/microcontroller-projects/interfacing-ds3231-rtc-with-arduino-and-diy-digital-clock
 
 #include <Wire.h>
-#include <DS3231.h>
 
-RTClib myRTC;
+
+// Get all date/time at once to avoid rollover (e.g., minute/second don't match)
+static uint8_t bcd2bin (uint8_t val) { return val - 6 * (val >> 4); }
+
 
 void setup () {
     Serial.begin(9600);
     Wire.begin();
     delay(500);
-    Serial.println("Nano Ready!");
+    Serial.println("Riscduino Ready!");
 }
 
 void loop () {
     
     delay(1000);
     
-    DateTime now = myRTC.now();
-    
-    Serial.print(now.year(), DEC);
+  
+  Wire.beginTransmission(0x68);
+  Wire.write(0);	// This is the first register address (Seconds)
+  			// We'll read from here on for 7 bytes: secs reg, minutes reg, hours, days, months and years.
+  Wire.endTransmission();
+
+
+  Wire.requestFrom(0x68, 7);
+
+
+  uint32_t second = bcd2bin(Wire.read() & 0x7F);
+  uint32_t minute = bcd2bin(Wire.read());
+  uint32_t hour = bcd2bin(Wire.read());
+  Wire.read();
+  uint32_t day = bcd2bin(Wire.read());
+  uint32_t month = bcd2bin(Wire.read());
+  uint32_t year = bcd2bin(Wire.read()) + 2000;
+   
+    Serial.print(year, DEC);
     Serial.print('/');
-    Serial.print(now.month(), DEC);
+    Serial.print(month, DEC);
     Serial.print('/');
-    Serial.print(now.day(), DEC);
+    Serial.print(day, DEC);
     Serial.print(' ');
-    Serial.print(now.hour(), DEC);
+    Serial.print(hour, DEC);
     Serial.print(':');
-    Serial.print(now.minute(), DEC);
+    Serial.print(minute, DEC);
     Serial.print(':');
-    Serial.print(now.second(), DEC);
+    Serial.print(second, DEC);
     Serial.println();
-    
-    Serial.print(" since midnight 1/1/1970 = ");
-    Serial.print(now.unixtime());
-    Serial.print("s = ");
-    Serial.print(now.unixtime() / 86400L);
-    Serial.println("d");
+   
 }
