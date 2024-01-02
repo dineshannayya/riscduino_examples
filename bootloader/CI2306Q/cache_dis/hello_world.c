@@ -37,6 +37,9 @@
     0.3 -  16 Sept 2023, Dinesh A
            A. system strap set to cache disable 
            B. Quad SPI mode enable for Flash and SRAM I/F
+    0.4 -  19 Dec 2023, Dinesh A
+           1. GPIO config change for 2306Q Bug fix in caravel default GPIO config
+           2. System Strap update for 2306
 
 **************************************************************************/
 /************************************************************
@@ -162,9 +165,9 @@ void configure_io()
     // configuring these IO from their default values.
 
     reg_mprj_io_1 = GPIO_MODE_MGMT_STD_OUTPUT;
-    reg_mprj_io_2 = GPIO_MODE_USER_STD_BIDIRECTIONAL;
-    reg_mprj_io_3 = GPIO_MODE_USER_STD_BIDIRECTIONAL;
-    reg_mprj_io_4 = GPIO_MODE_USER_STD_BIDIRECTIONAL;
+    reg_mprj_io_2 = GPIO_MODE_MGMT_STD_INPUT_NOPULL;
+    reg_mprj_io_3 = GPIO_MODE_MGMT_STD_INPUT_NOPULL;
+    reg_mprj_io_4 = GPIO_MODE_MGMT_STD_INPUT_NOPULL;
 
     // -------------------------------------------
 
@@ -239,34 +242,36 @@ void main()
     // la0_data[17:16] - 0x40; // Setting User Baud to 57600 with system clock 10Mhz = (10,000,000/(16 * (9+2))
     reg_la0_data = 0x096;
 
-    // Bit[13] - 1  Cache Disabled
-    // Bit[14] - 1  SRAM Clock Invert
-    reg_mprj_wbhost_reg5 = 0x6000; // system strap
-    //putdword(reg_mprj_wbhost_reg5);
+    // System Strap
+    // Flash=Quad, SRAM: Quad
+    reg_mprj_wbhost_reg5 = 0x00006A00; 
+    ////putdword(reg_mprj_wbhost_reg5);
 
-    //putdword(reg_mprj_wbhost_reg2);
-    /*** Disabled for 2306Q 
-    reg_mprj_wbhost_reg2 = 0x00879898;
-    reg_mprj_wbhost_reg3 = 0x00;// wbs clock divr-4
-    *****/
+    ////putdword(reg_mprj_wbhost_reg2);
+    ///*** Disabled for 2306Q 
+    //reg_mprj_wbhost_reg2 = 0x00879898;
+    //reg_mprj_wbhost_reg3 = 0x00;// wbs clock divr-4
+    //*****/
 
      // Remove Wishbone Reset
      reg_mprj_wbhost_ctrl = 0x0;
      reg_mprj_wbhost_ctrl = 0x1;
 
+      // iCache/dcache Disabled
+      reg_glbl_cfg1 = 0x0C000000;
      // Remove Reset
      reg_glbl_cfg0 = 0x01f;
 
-    /****************************************
-      To Enable the Quad Mode in SPI Flash we need to
-      write Status Reg[2] bit [1] = 1
-    ******************************************/
-       reg_qspi_imem_ctrl1 =  0x00000001;
-       reg_qspi_imem_ctrl2 =  0x01010031;
-       reg_qspi_imem_wdata =  0x00000002;
+    ///****************************************
+    //  To Enable the Quad Mode in SPI Flash we need to
+    //  write Status Reg[2] bit [1] = 1
+    //******************************************/
+     reg_qspi_imem_ctrl1 =  0x00000001;
+     reg_qspi_imem_ctrl2 =  0x01010031;
+     reg_qspi_imem_wdata =  0x00000002;
 
-     // Setting Serial Flash to Quad Mode
-     reg_qspi_dmem_g0_rd_ctrl = 0x619800EB;
+    // Setting Serial Flash to Quad Mode
+    reg_qspi_dmem_g0_rd_ctrl = 0x619800EB;
 
     /****************************************
       To Enable the Quad Mode in SPI SRAM 
@@ -287,9 +292,9 @@ void main()
     If the User Firmware is progress, then bypass the configuration
     Check MSB bit[31] = 1 indicate User Flashing is progress
     *****************************/
-    //if((reg_mprj_wbhost_ctrl & 0x80000000) == 0x0) {
-    //     reg_glbl_cfg0 = 0x11f;
-    //}
+    if((reg_mprj_wbhost_ctrl & 0x8000) == 0x0) {
+         reg_glbl_cfg0 = 0x11f;
+    }
     
     // blink the led if all checks passes
     while (bFail == 0) {

@@ -257,8 +257,8 @@ void main()
      reg_mprj_wbhost_ctrl = 0x0;
      reg_mprj_wbhost_ctrl = 0x1;
 
-      // iCache/dcache Enabled
-     reg_glbl_cfg1 = 0x00000000;
+      // iCache/dcache Enabled, dcache-clk invert
+     reg_glbl_cfg1 = 0x00020000;
      // Remove Reset
      reg_glbl_cfg0 = 0x01f;
 
