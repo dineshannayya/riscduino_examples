@@ -1,5 +1,6 @@
 cache_dis  - Both cache disabled                  - reg_glbl_cfg1 = 0x0C000000;
-dcache_enb - Dacahe enable       - dcache-clk-inv - reg_glbl_cfg1 = 0x04020000;
+dcache_enb0- Dacahe enable       -                - reg_glbl_cfg1 = 0x04000000;
+dcache_enb1- Dacahe enable       - dcache-clk-inv - reg_glbl_cfg1 = 0x04020000;
 cache_enb  - Both cache enabled  -                - reg_glbl_cfg1 = 0x00000000;
 cache_enb1 - Both cache enabled  - icache-clk-inv - reg_glbl_cfg1 = 0x00010000;
 cache_enb2 - Both cache enabled  - dcache-clk-inv - reg_glbl_cfg1 = 0x00020000;
