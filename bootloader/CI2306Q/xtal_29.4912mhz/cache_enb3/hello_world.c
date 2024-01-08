@@ -40,6 +40,8 @@
     0.4 -  19 Dec 2023, Dinesh A
            1. GPIO config change for 2306Q Bug fix in caravel default GPIO config
            2. System Strap update for 2306
+    0.5 - 8 Jan 2024, Dinesh A
+           Change it 29,4912Mhz xtal
 
 **************************************************************************/
 /************************************************************
@@ -235,12 +237,15 @@ void main()
 	reg_la3_oenb = reg_la3_iena = 0x00000000;    // [127:96]
 
     // Enable UART MASTER with LA control
+    // la0_data[0  - 0-
     // la0_data[1] - 1- User Uart Master Tx Enable 
     // la0_data[2] - 1- User Uart Master Rx Enable 
-    // la0_data[3] - 1- User Uart Master Stop bit 2
-    // la0_data[17:16] - 0x3F; // Setting User Baud to 9600 with system clock 10Mhz = (10,000,000/(16 * (63+2))
-    // la0_data[17:16] - 0x40; // Setting User Baud to 57600 with system clock 10Mhz = (10,000,000/(16 * (9+2))
-    reg_la0_data = 0x096;
+    // la0_data[3] - 0- User Uart Master Stop bit 2
+    // la0_data[15:4] - 0xBE; // Setting User Baud to 9600 with system clock 29.4912Mhz = (29,491,200/(16 * (190+2))
+    // la0_data[15:4] - 0x1E; // Setting User Baud to 57600 with system clock 29.4912Mhz = (29,491,200/(16 * (30+2))
+    // la0_data[15:4] - 0x0E; // Setting User Baud to 115200 with system clock 29.4912Mhz = (29,491,200/(16 * (14+2))
+    // la0_data[15:4] - 0x06; // Setting User Baud to 230400 with system clock 29.4912Mhz = (29,491,200/(16 * (6+2))
+    reg_la0_data = 0x066;
 
     // System Strap
     // Flash=Quad, SRAM: Quad
@@ -257,8 +262,8 @@ void main()
      reg_mprj_wbhost_ctrl = 0x0;
      reg_mprj_wbhost_ctrl = 0x1;
 
-      // dcache Enabled, dcache-clk Normal
-     reg_glbl_cfg1 = 0x04000000;
+      // iCache/dcache Enabled, icache/dcache-clk invert
+     reg_glbl_cfg1 = 0x00030000;
      // Remove Reset
      reg_glbl_cfg0 = 0x01f;
 
@@ -287,7 +292,7 @@ void main()
 
 
     // Wait for 20 Second 
-	delay(200000000);
+	delay(600000000);
     /****************************
     If the User Firmware is progress, then bypass the configuration
     Check MSB bit[31] = 1 indicate User Flashing is progress
