@@ -93,8 +93,11 @@ for(j=0; j < iMemSize; j++) {
       if(iTxData == iRxData) Serial.print("=> Matched");
       else { TestStatus = false; Serial.print("=> FAIL"); }
       Serial.println();
+      if(TestStatus == false) break;
     }
 }
+
+if(TestStatus == false) return;
 
 Serial.print("########### Testing TCM Memory in 32 Bit Aligned Read Back and Verify-2 ###########");
 Serial.println();
@@ -112,6 +115,7 @@ for(j=0; j < iMemSize; j++) {
       if(iTxData == iRxData) Serial.print("=> Matched");
       else { TestStatus = false; Serial.print("=> FAIL"); }
       Serial.println();
+      if(TestStatus == false) break;
     }
 }
 
@@ -123,14 +127,14 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
 
-  run_tcm_mem_check(BIST_DATA_PAT_TYPE1,1);
-  run_tcm_mem_check(BIST_DATA_PAT_TYPE2,1);
-  run_tcm_mem_check(BIST_DATA_PAT_TYPE3,1);
-  run_tcm_mem_check(BIST_DATA_PAT_TYPE4,1);
-  run_tcm_mem_check(BIST_DATA_PAT_TYPE5,1);
-  run_tcm_mem_check(BIST_DATA_PAT_TYPE6,1);
-  run_tcm_mem_check(BIST_DATA_PAT_TYPE7,1);
-  run_tcm_mem_check(BIST_DATA_PAT_TYPE8,1);
+  if(TestStatus == true) run_tcm_mem_check(BIST_DATA_PAT_TYPE1,1);
+  if(TestStatus == true) run_tcm_mem_check(BIST_DATA_PAT_TYPE2,1);
+  if(TestStatus == true) run_tcm_mem_check(BIST_DATA_PAT_TYPE3,1);
+  if(TestStatus == true) run_tcm_mem_check(BIST_DATA_PAT_TYPE4,1);
+  if(TestStatus == true) run_tcm_mem_check(BIST_DATA_PAT_TYPE5,1);
+  if(TestStatus == true) run_tcm_mem_check(BIST_DATA_PAT_TYPE6,1);
+  if(TestStatus == true) run_tcm_mem_check(BIST_DATA_PAT_TYPE7,1);
+  if(TestStatus == true) run_tcm_mem_check(BIST_DATA_PAT_TYPE8,1);
   
   if(TestStatus==false) Serial.println("#### TCM MEMORY TEST FAILED ####");
   else Serial.println("#### TCM Memory TEST PASSED #####");
