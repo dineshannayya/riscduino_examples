@@ -85,10 +85,10 @@ void setup(void) {
   //tft.initR(INITR_BLACKTAB);      // Init ST7735S chip, black tab
 
   // OR use this initializer if using a 1.8" TFT screen with offset such as WaveShare:
-  // tft.initR(INITR_GREENTAB);      // Init ST7735S chip, green tab
+   tft.initR(INITR_GREENTAB);      // Init ST7735S chip, green tab
 
   // OR use this initializer (uncomment) if using a 1.44" TFT:
-  tft.initR(INITR_144GREENTAB); // Init ST7735R chip, green tab
+  //tft.initR(INITR_144GREENTAB); // Init ST7735R chip, green tab
 
   // OR use this initializer (uncomment) if using a 0.96" 160x80 TFT:
   //tft.initR(INITR_MINI160x80);  // Init ST7735S mini display
